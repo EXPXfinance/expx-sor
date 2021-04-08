@@ -20,14 +20,14 @@ export async function getAllPoolDataOnChain(
         let pool = pools.pools[i];
 
         addresses.push([pool.id]);
-        total++;
         pool.tokens.forEach(token => {
             addresses[i].push(token.address);
             total++;
         });
     }
 
-    let results = await contract.getPoolsBalances(addresses, total);
+    let response = await contract.getPoolsBalances(addresses, total);
+    let results = response.returnData;
 
     let j = 0;
     let onChainPools: Pools = { pools: [] };

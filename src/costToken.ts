@@ -7,10 +7,14 @@ export async function getTokenWeiPrice(
     TokenSymbol: string,
     requestUrl: string
 ): Promise<BigNumber> {
-    const priceWbnb = (
-        await fetch(`${requestUrl}/token/prices/wbnb?tokens=${TokenSymbol}`)
-    ).json()[TokenSymbol];
-    return priceWbnb.times(EONE);
+    const result = await fetch(
+        `${requestUrl}/token/prices/wbnb?tokens=${TokenSymbol}`
+    );
+
+    const allPrices = await result.json();
+    const priceWbnb = allPrices[TokenSymbol];
+
+    return new BigNumber(priceWbnb.toString()).times(EONE);
 }
 
 export function calculateTotalSwapCost(

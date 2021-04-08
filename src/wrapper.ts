@@ -16,7 +16,6 @@ export class SOR {
     provider: BaseProvider;
     gasPrice: BigNumber;
     maxPools: number;
-    chainId: number;
     swapCost: BigNumber = new BigNumber('100000');
     tokenCost = {};
     onChainCache: Pools = { pools: [] };
@@ -25,24 +24,20 @@ export class SOR {
     isAllFetched: boolean = false;
     poolsUrl: string;
     pools;
-
-    // TODO change address to real address
-    POOLS_INFO: { [chainId: number]: string } = {
-        56: 'POOLS_INFO_CONTRACT_ADDRESS'
-    };
+    poolsInfoAddress;
 
     constructor(
         Provider: BaseProvider,
         GasPrice: BigNumber,
         MaxPools: number,
-        ChainId: number,
-        PoolsUrl: string
+        PoolsUrl: string,
+        PoolsInfoAddress: string
     ) {
         this.provider = Provider;
         this.gasPrice = GasPrice;
         this.maxPools = MaxPools;
-        this.chainId = ChainId;
         this.poolsUrl = PoolsUrl;
+        this.poolsInfoAddress = PoolsInfoAddress;
         this.pools = new sor.POOLS();
     }
 
@@ -113,7 +108,7 @@ export class SOR {
 
         let onChainPools: Pools = await sor.getAllPoolDataOnChain(
             SubgraphPools,
-            this.POOLS_INFO[this.chainId],
+            this.poolsInfoAddress,
             this.provider
         );
 
@@ -390,7 +385,7 @@ export class SOR {
                 // Retrieves onchain balances for pools list
                 onChainPools = await sor.getAllPoolDataOnChain(
                     { pools: poolsOfInterest },
-                    this.POOLS_INFO[this.chainId],
+                    this.poolsInfoAddress,
                     this.provider
                 );
             }
